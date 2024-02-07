@@ -1,11 +1,12 @@
 'use client'
+import { Suspense, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+
 import { KAKAO_REDIRECT_URI, KAKAO_REST_API_KEY } from '@/config'
 import {
   CreateKakaoCustomTokenResponse,
   authClient,
 } from '@/infrastructure/pnd/client/auth.client'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
 
 export default function KakaoCallbackPage() {
   const router = useRouter()
@@ -45,14 +46,16 @@ export default function KakaoCallbackPage() {
         <p className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded w-64">
           {code?.slice(0, 10)}...
         </p>
-        <a
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          href={`https://kauth.kakao.com/oauth/token?${new URLSearchParams(
-            request as unknown as Record<string, string>,
-          )}`}
-        >
-          Request token
-        </a>
+        <Suspense fallback={<div>Loading...</div>}>
+          <a
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            href={`https://kauth.kakao.com/oauth/token?${new URLSearchParams(
+              request as unknown as Record<string, string>,
+            )}`}
+          >
+            Request token
+          </a>
+        </Suspense>
       </div>
 
       <div className="flex flex-row items-center justify-center space-x-4">
