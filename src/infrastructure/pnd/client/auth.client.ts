@@ -1,4 +1,3 @@
-import { PND_API_BASE_URL } from '@/config'
 import { fetchJson } from '@/helper/fetcher'
 
 export interface CreateKakaoCustomTokenResponse {

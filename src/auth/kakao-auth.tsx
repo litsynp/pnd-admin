@@ -17,7 +17,7 @@ interface KakaoSdk {
 
 export function KakaoScript() {
   function initializeKakao() {
-    // @ts-ignore
+    // @ts-expect-error window.Kakao is loaded from external script
     const kakao: KakaoSdk | null = window ? window.Kakao : null
 
     kakao?.init(KAKAO_JS_KEY)
@@ -44,7 +44,7 @@ export function KakaoLoginButton({ className }: { className?: string }) {
   ]
 
   function loginWithKakao() {
-    // @ts-ignore
+    // @ts-expect-error window.Kakao is loaded from external script
     const kakao: KakaoSdk | null = window ? window.Kakao : null
 
     kakao?.Auth.authorize({

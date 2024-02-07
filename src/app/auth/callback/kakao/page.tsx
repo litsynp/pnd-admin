@@ -1,6 +1,6 @@
 'use client'
-import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense, useState } from 'react'
 
 import { KAKAO_REDIRECT_URI, KAKAO_REST_API_KEY } from '@/config'
 import {
@@ -42,11 +42,11 @@ export default function KakaoCallbackPage() {
         className="flex items-center space-x-4 cursor-pointer"
         onClick={() => console.log(request)}
       >
-        {code ? '✅' : '❌'} Code:
-        <p className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded w-64">
-          {code?.slice(0, 10)}...
-        </p>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<>Loading...</>}>
+          {code ? '✅' : '❌'} Code:
+          <p className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded w-64">
+            {code?.slice(0, 10)}...
+          </p>
           <a
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             href={`https://kauth.kakao.com/oauth/token?${new URLSearchParams(
