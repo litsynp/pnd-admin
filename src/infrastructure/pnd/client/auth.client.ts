@@ -1,14 +1,15 @@
 import { fetchJson } from '@/helper/fetcher'
+import { FirebaseProviderType } from '../user.model'
 
 export interface CreateKakaoCustomTokenResponse {
   authToken: string
   email: string
-  fbProviderType: 'email' | 'kakao' | 'google' | 'apple'
+  fbProviderType: FirebaseProviderType
   fbUid: string
   photoURL: string
 }
 
-async function createKakaoCustomToken({
+function createKakaoCustomToken({
   oauthToken,
 }: {
   oauthToken: string

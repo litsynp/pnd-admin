@@ -59,7 +59,7 @@ export function KakaoLoginButton({ className }: { className?: string }) {
 
   return (
     <button className={className} onClick={onClick}>
-      Sign in with Kakao
+      카카오 로그인
     </button>
   )
 }
