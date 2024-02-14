@@ -6,7 +6,6 @@
 
 - Firebase App & Firebase Auth
 - Kakao JavaScript SDK
-- Kakao REST API
 
 ## 사용 방법
 
