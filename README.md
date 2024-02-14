@@ -10,7 +10,7 @@
 
 ## 사용 방법
 
-작동을 위해 `.env.local.template`를 채우거나 환경변수 설정이 필요합니다.
+작동을 위해 `.env.template`를 채워서 `.env.local` 파일을 만들거나 환경변수 설정이 필요합니다.
 
 ```sh
 npm install
