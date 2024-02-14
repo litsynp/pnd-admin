@@ -1,18 +1,24 @@
 'use client'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+
 import { useAuth } from '@/auth/use-auth'
 import { userClient } from '@/infrastructure/pnd/client/user.client'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import {
+  FIREBASE_PROVIDER_TYPES,
+  FirebaseProviderType,
+} from '@/infrastructure/pnd/user.model'
 
 export default function RegisterPage() {
   const router = useRouter()
 
-  const { user, providerType: fbProviderType } = useAuth()
+  const { user } = useAuth()
 
   const email = user?.email
   const [fullname, setFullname] = useState(user?.displayName || '')
   const [nickname, setNickname] = useState('')
   const fbUid = user?.uid
+  const [fbProviderType, setFbProviderType] = useState<FirebaseProviderType>()
   const [profileImageId, setProfileImageId] = useState()
   const [nicknameDuplicateStatus, setNicknameDuplicateStatus] =
     useState<NicknameStatus>('NO_INPUT')
@@ -20,26 +26,31 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (email && fbUid && fbProviderType) {
+    if (email && fbUid) {
       setLoading(false)
     }
-  }, [email, fbUid, fbProviderType])
+  }, [email, fbUid])
 
   async function fetchRegisterUser() {
     if (!email || !fbUid || !fbProviderType) {
       return
     }
 
-    const result = await userClient.registerUser({
-      email,
-      fullname,
-      nickname,
-      fbUid,
-      fbProviderType,
-      profileImageId,
-    })
+    try {
+      const result = await userClient.registerUser({
+        email,
+        fullname,
+        nickname,
+        fbUid,
+        fbProviderType,
+        profileImageId,
+      })
 
-    console.log(result)
+      alert('회원가입이 완료되었습니다: ' + JSON.stringify(result, null, 2))
+    } catch (error) {
+      alert('회원가입에 실패했습니다.')
+      console.error(error)
+    }
   }
 
   useEffect(() => {
@@ -77,13 +88,18 @@ export default function RegisterPage() {
         </div>
       )}
 
-      {email && fbUid && fbProviderType && (
+      {email && fbUid && (
         <div className="flex flex-col items-center justify-center space-y-4">
           <Input name="*이메일" field={email} disabled />
           <Input name="*이름" field={fullname} setField={setFullname} />
           <Input name="*닉네임" field={nickname} setField={setNickname} />
           <CheckNicknameStatusResult status={nicknameDuplicateStatus} />
-          <Input name="*FB Provider Type" field={fbProviderType} disabled />
+          <Selection
+            name="*FB Provider Type"
+            field={fbProviderType}
+            setField={setFbProviderType}
+            options={FIREBASE_PROVIDER_TYPES}
+          />
           <Input name="*FB UID" field={fbUid || ''} disabled />
           <Input
             type="number"
@@ -162,6 +178,37 @@ function Input({
         onChange={(e) => setField && setField(e.target.value)}
         disabled={disabled}
       />
+    </span>
+  )
+}
+
+function Selection({
+  name,
+  field,
+  setField,
+  options,
+}: {
+  name: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  field: any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setField?: (value: any) => void
+  options: readonly string[]
+}) {
+  return (
+    <span className="flex flex-row items-center space-x-4 w-96 justify-between">
+      <span>{name}</span>
+      <select
+        className="border border-gray-400 rounded px-2 py-1"
+        value={field}
+        onChange={(e) => setField && setField(e.target.value)}
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
     </span>
   )
 }

@@ -1,5 +1,6 @@
 import { fetchJson } from '@/helper/fetcher'
 import { FirebaseProviderType } from '../user.model'
+import { generateJsonHeader } from '../header'
 
 export interface CreateKakaoCustomTokenResponse {
   authToken: string
@@ -18,10 +19,7 @@ function createKakaoCustomToken({
     `/api/auth/custom-tokens/kakao`,
     {
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: generateJsonHeader(),
       body: JSON.stringify({ oauthToken }),
     },
   )

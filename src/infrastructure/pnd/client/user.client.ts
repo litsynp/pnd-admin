@@ -1,5 +1,6 @@
 import { fetchJson } from '@/helper/fetcher'
 import { FirebaseProviderType, UserStatus } from '../user.model'
+import { generateAuthHeader, generateJsonHeader } from '../header'
 
 interface CheckUserStatusResponse {
   fbProviderType: FirebaseProviderType
@@ -13,10 +14,7 @@ function checkUserStatus({
 }): Promise<CheckUserStatusResponse> {
   return fetchJson<CheckUserStatusResponse>(`/api/users/status`, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+    headers: generateJsonHeader(),
     body: JSON.stringify({ email }),
   })
 }
@@ -59,10 +57,7 @@ function registerUser({
 
   return fetchJson<RegisterUserResponse>(`/api/users`, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+    headers: generateJsonHeader(),
     body: JSON.stringify({
       email,
       fbProviderType,
@@ -85,11 +80,45 @@ function checkUsername({
 }): Promise<CheckUsernameResponse> {
   return fetchJson<CheckUsernameResponse>(`/api/users/check/nickname`, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+    headers: generateJsonHeader(),
     body: JSON.stringify({ nickname }),
+  })
+}
+
+export interface MyProfileResponse {
+  id: number
+  email: string
+  nickname: string
+  fullname: string
+  fbProviderType: FirebaseProviderType
+  profileImageUrl?: string
+}
+
+function findMyProfile({
+  accessToken,
+}: {
+  accessToken: string
+}): Promise<MyProfileResponse> {
+  return fetchJson<MyProfileResponse>(`/api/users/me`, {
+    method: 'GET',
+    headers: {
+      ...generateJsonHeader(),
+      ...generateAuthHeader(accessToken),
+    },
+  })
+}
+
+function deleteMyAccount({
+  accessToken,
+}: {
+  accessToken: string
+}): Promise<void> {
+  return fetchJson<void>(`/api/users/me`, {
+    method: 'DELETE',
+    headers: {
+      ...generateJsonHeader(),
+      ...generateAuthHeader(accessToken),
+    },
   })
 }
 
@@ -97,4 +126,6 @@ export const userClient = {
   checkUserStatus,
   registerUser,
   checkUsername,
+  findMyProfile,
+  deleteMyAccount,
 }

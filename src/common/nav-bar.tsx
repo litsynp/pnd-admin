@@ -32,9 +32,20 @@ export function NavBar() {
       <div className="right-container flex items-center space-x-4">
         {user ? (
           <div className="flex items-center space-x-4">
-            <div>
-              {user?.email} / {fbProviderType}{' '}
-              {status === 'REGISTERED' ? '✅' : '❌'}
+            <div className="flex flex-row space-x-2">
+              <div
+                className={status === 'REGISTERED' ? 'cursor-pointer' : ''}
+                onClick={() => {
+                  if (status === 'REGISTERED') {
+                    router.push('/auth/profile')
+                  } else {
+                    router.push('/auth/register')
+                  }
+                }}
+              >
+                {user?.email} / {fbProviderType}{' '}
+                {status === 'REGISTERED' ? '✅' : '❌'}
+              </div>
             </div>
             <div className="cursor-pointer" onClick={signOut}>
               로그아웃
