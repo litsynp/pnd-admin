@@ -25,9 +25,20 @@ export function NavBar() {
         >
           PND Admin
         </span>
-      </div>
 
-      <div className="middle-container"></div>
+        <div className="middle-container flex items-center space-x-4">
+          {user && (
+            <span
+              className="cursor-pointer"
+              onClick={() => {
+                router.push('/images')
+              }}
+            >
+              이미지 업로드
+            </span>
+          )}
+        </div>
+      </div>
 
       <div className="right-container flex items-center space-x-4">
         {user ? (

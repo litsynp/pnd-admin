@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { MouseEventHandler, useEffect, useState } from 'react'
 
 import { useAuth } from '@/auth/use-auth'
 import {
@@ -9,7 +9,7 @@ import {
 import Image from 'next/image'
 
 export default function MyProfilePage() {
-  const { user, signOut } = useAuth()
+  const { user, accessToken, signOut } = useAuth()
   const [myProfile, setMyProfile] = useState<MyProfileResponse>()
 
   useEffect(() => {
@@ -40,6 +40,15 @@ export default function MyProfilePage() {
     }
   }
 
+  const copyText: MouseEventHandler<HTMLTextAreaElement> = async (e) => {
+    try {
+      await navigator.clipboard.writeText(e.currentTarget.value)
+      alert('클립보드에 복사되었습니다.')
+    } catch (error) {
+      alert('클립보드 복사에 실패했습니다.')
+    }
+  }
+
   return (
     <main className="flex flex-col items-center justify-center w-full px-20 text-center py-40">
       <h1 className="text-2xl font-bold">내 정보</h1>
@@ -65,6 +74,15 @@ export default function MyProfilePage() {
         <h2>FB Provider Type: {myProfile?.fbProviderType}</h2>
         <h2>닉네임: {myProfile?.nickname}</h2>
         <h2>이름: {myProfile?.fullname}</h2>
+        <div>
+          <h2>Access Token</h2>
+          <textarea
+            className="w-full h-20 p-2 rounded-md border-2 border-gray-300 bg-gray-100 resize-none focus:outline-none overflow-hidden cursor-pointer"
+            value={accessToken}
+            onClick={copyText}
+            readOnly
+          ></textarea>
+        </div>
       </div>
 
       <div className="flex flex-col items-center justify-center w-full mt-8">

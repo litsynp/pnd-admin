@@ -20,13 +20,16 @@ export function useAuth() {
   const [user, setUser] = useState<FbUser | null>()
   const [status, setStatus] = useState<UserStatus>()
   const [providerType, setProviderType] = useState<FirebaseProviderType>()
-  const isLogged = !!user
+  const [accessToken, setAccessToken] = useState<string>()
+  const [isLoading, setIsLoading] = useState(true)
+  const isLoggedIn = !!user
 
   const email = user?.email
 
   useEffect(() => {
     async function fetchUserStatus() {
       if (!email) {
+        setIsLoading(false)
         return
       }
 
@@ -34,20 +37,39 @@ export function useAuth() {
 
       setStatus(result.status)
       setProviderType(result.fbProviderType)
+      setIsLoading(false)
     }
 
     fetchUserStatus()
   }, [email])
 
   useEffect(() => {
-    const unsubscribe = firebaseAuth.onAuthStateChanged((user) => {
-      setUser(user)
-    })
+    const unsubscribeAuthStateListener = firebaseAuth.onAuthStateChanged(
+      (user) => {
+        setUser(user)
+      },
+    )
 
-    return () => unsubscribe()
+    const unsubscribeIdTokenListener = firebaseAuth.onIdTokenChanged(
+      async (user) => {
+        if (user) {
+          const token = await user.getIdToken()
+          setAccessToken(token)
+        }
+      },
+    )
+
+    return () => {
+      unsubscribeAuthStateListener()
+      unsubscribeIdTokenListener()
+    }
   }, [])
 
   function signOut() {
+    setUser(null)
+    setStatus(undefined)
+    setProviderType(undefined)
+    setAccessToken(undefined)
     firebaseAuth.signOut()
   }
 
@@ -91,9 +113,11 @@ export function useAuth() {
 
   return {
     user,
-    isLogged,
+    isLoggedIn,
+    isLoading,
     status,
     providerType,
+    accessToken,
     signOut,
     signInGoogle,
     signInKakao,
