@@ -1,5 +1,5 @@
 export interface ImageMedia {
-  id: number
+  id: string
   mediaType: 'image'
   url: string
   createdAt: Date

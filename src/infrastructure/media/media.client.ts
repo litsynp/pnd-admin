@@ -7,7 +7,7 @@ async function uploadImage(
   { accessToken }: { accessToken: string },
 ): Promise<ImageMedia> {
   interface UploadImageApiResponse {
-    id: number
+    id: string
     mediaType: 'image'
     url: string
     createdAt: string

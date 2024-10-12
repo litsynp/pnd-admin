@@ -20,7 +20,7 @@ function checkUserStatus({
 }
 
 interface RegisterUserResponse {
-  id: number
+  id: string
   email: string
   fbProviderType: FirebaseProviderType
   fbUid: string
@@ -86,7 +86,7 @@ function checkUsername({
 }
 
 export interface MyProfileResponse {
-  id: number
+  id: string
   email: string
   nickname: string
   fullname: string
